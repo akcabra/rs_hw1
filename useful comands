@@ -1,0 +1,3 @@
+in sim_log dirrectory
+
+grep -ri "simSeconds" ./stats.txt && grep -ri "numCycles" ./stats.txt && grep -ri "cpi" ./stats.txt && grep -ri "ipc" ./stats.txt

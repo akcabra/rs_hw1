@@ -12,13 +12,18 @@ First, report the following metrics from `stats.txt` for both CPU models:
 
 | Metric | MinorCPU | O3CPU |
 |---|---|---|
-| CPI |  |  |
-| Total cycles |  |  |
-| IPC | |    |
+| CPI |  1.507109 | 0.885920 |
+| Total cycles | 100800 | 59253 |
+| IPC |  0.663522 |  1.128770  |
 
-What is the IPC speedup of O3CPU over MinorCPU and explain it.
+What is the IPC speedup of O3CPU over MinorCPU? Explain it.
 
+The IPC speedup of O3CPU over MinorCPU is calculated:
 
+$$\text{IPC Speedup} = \frac{\text{IPC}_{\text{O3CPU}}}{\text{IPC}_{\text{MinorCPU}}} = \frac{1.128770}{0.663522} \approx 1.70$$
+
+The MinorCPU is in-order only, where O3CPU is out-of-order, which allows it to execute instructions more efficiently by reordering them to avoid stalls and better utilize the CPU's resources. 
+O3CPU also performs speculatioveve execution(=branch prediction), which allows it to execute instructions before it is certain they are needed, further improving performance. It uses a large ROB, thath has 128 entries in curent configuration.
 
 ### Task 1b: 
 For parameter `SEQ_LEN=64` of workload, run O3CPU with ROB sizes of 16, 32, 64, 128 and 256 entries and Plot IPC vs. ROB size. At what ROB size does performance saturate? What does this tell you about the instruction-level parallelism (ILP) available in this workload?

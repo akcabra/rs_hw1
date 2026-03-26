@@ -9,6 +9,7 @@ from gem5.simulate.simulator import Simulator
 from gem5.resources.resource import CustomResource
 from cpuO3_model import RISCV_O3_CPU
 from cpuInORD_model import RiscV_InOrder_CPU
+import datetime
 
 cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
 
@@ -16,8 +17,11 @@ cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
 memory = SingleChannelDDR3_1600("7GiB")
 
 #Source code for simple processor gem5/src/python/gem5/components/processors/simple_processor.py
-processor = RISCV_O3_CPU()
+# O3CPU experiment
+# processor = RISCV_O3_CPU()
 
+# MinorCPU experiment
+processor = RiscV_InOrder_CPU()
 
 board = SimpleBoard(
     clk_freq="3GHz",
@@ -29,8 +33,11 @@ board = SimpleBoard(
 
 
 # Set the workload.
-#binary = CustomResource("./workload/masked_scaled_dot_product.bin")
+binary = CustomResource("./workload/scaled_dot_product.bin")
 board.set_se_binary_workload(binary)
 
 simulator = Simulator(board=board)
+print(f"[{datetime.datetime.now()}] Simulation has started...")
 simulator.run()
+
+print(f"[{datetime.datetime.now()}] Simulation has completed!")
