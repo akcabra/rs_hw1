@@ -16,12 +16,13 @@ cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
 
 memory = SingleChannelDDR3_1600("7GiB")
 
+# TASK 1a
 #Source code for simple processor gem5/src/python/gem5/components/processors/simple_processor.py
 # O3CPU experiment
-# processor = RISCV_O3_CPU()
+processor = RISCV_O3_CPU()
 
 # MinorCPU experiment
-processor = RiscV_InOrder_CPU()
+# processor = RiscV_InOrder_CPU()
 
 board = SimpleBoard(
     clk_freq="3GHz",

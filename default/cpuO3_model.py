@@ -145,7 +145,13 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - RENAME STAGE
         # ****************************
-        self.numROBEntries = 128
+        # TASK 1b
+        # self.numROBEntries = 16
+        # self.numROBEntries = 32
+        # self.numROBEntries = 64
+        # self.numROBEntries = 128
+        self.numROBEntries = 256
+
         self.numPhysIntRegs = 80
         self.numPhysFloatRegs = 64
         self.renameWidth = 2

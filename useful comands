@@ -1,10 +1,11 @@
 in sim_log dirrectory
-COMMAND TO GET DESIRED STATDS 
+COMMAND TO GET DESIRED STATDS (TASK 1a)
 grep -ri "simSeconds" ./stats.txt && grep -ri "numCycles" ./stats.txt && grep -ri "cpi" ./stats.txt && grep -ri "ipc" ./stats.txt
 
 če rabiš katero dodatno statistiko samo dodaš:
 && grep -ri "ENERGETSKA UČINKOVITOST" ./stats.txt 
 
+TASK 1b grep -ri "ipc" ./stats.txt
 --------------Navodila za poganjanje ---------------------------------------------------------
 1. Generiranje .bin fajlov iz .c sourca
 1.1 Poženi make_apptainer.sh (znotraj direktorija z source.c fajli)

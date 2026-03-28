@@ -30,8 +30,14 @@ For parameter `SEQ_LEN=64` of workload, run O3CPU with ROB sizes of 16, 32, 64, 
 
 | Rob size   | 16 | 32 | 64 | 128 | 256 | 
 |---|---|---|---|---|---|
-| O3 | | |  | |  |
+| O3 | 0.831878 | 0.992742 | 1.121239 | 1.128770  | 1.128770  |
 
+![IPC vs ROB size](figs/ipc_vs_rob.png)
+
+PREGLEJ ŠE ENKRAT IN UTEMELJI
+Performance saturates at about ROB = 128 entries.
+Evidence: IPC is 1.128770 at ROB 128 and stays 1.128770 at ROB 256, so there is no further gain.
+Interpretation: the available ILP in this workload is mostly exhausted by around 128 in-flight instructions; increasing ROB beyond that does not uncover more useful parallelism.
 
 ### Task 1c:  
 Rerun both the original and optimized version (`scaled_dot_product_adv`) of the attention kernel on O3CPU, sweeping pipeline width  over  2, 4, and 8 width of different stages to the same value. Record IPC for each combination and plot both versions on the same graph as IPC vs. pipeline width. Analyze whether the IPC gap between the two versions grows or shrinks as the pipeline widens, and explain what this reveals about the relationship between  ILP and hardware utilization.
