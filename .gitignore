@@ -4,3 +4,4 @@ hello world example
 sim_log
 slurm_logs
 *.pyc
+*.out

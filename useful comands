@@ -1,3 +1,30 @@
 in sim_log dirrectory
-
+COMMAND TO GET DESIRED STATDS 
 grep -ri "simSeconds" ./stats.txt && grep -ri "numCycles" ./stats.txt && grep -ri "cpi" ./stats.txt && grep -ri "ipc" ./stats.txt
+
+če rabiš katero dodatno statistiko samo dodaš:
+&& grep -ri "ENERGETSKA UČINKOVITOST" ./stats.txt 
+
+--------------Navodila za poganjanje ---------------------------------------------------------
+1. Generiranje .bin fajlov iz .c sourca
+1.1 Poženi make_apptainer.sh (znotraj direktorija z source.c fajli)
+    sbatch make_apptainer.sh
+    * če želiš interaktivno vrzijo poženi z srun -> mogoče bolj praktično
+1.2 Če terminal jamra zaradi permissnov
+    chmod 777 make_apptainer.sh
+Načeloma ta korak izvedeš enrat in si good, ker .c programov znotraj workload/ ne bomo spreminjal
+
+2. Poganjanje simulatorja
+2.1 logiranje in statistika
+V exec_apptainer.sh z --outdir=sim_log nastaviš direktorij, kamor se bodo shranjevala statistika 
+Kam se ti shranjujejo generalni logi slurm jobov (in pa tudi print() od cpu_benchmark.py) določiš zgoraj z #SBATCH --output=slurm_logs/gem5_test_log.txt
+2.2 Zadnji argument ukaza določi, kateri simulacijski fajl uzame, definiran v pythonu. Jaz sem nazadnje runnal
+default/cpu_benchmark.py
+Ratko je že pripravil cpu_benchmark.py -> to je fajl, s katerim se igraš, ker tukaj spreminjaš parametre sistema (chace size, tip procesorja itd.)
+Za spremebo same arhitekture znotraj procesorja rabiš spreminjat cpuInORD_model.py in cpuO3_model.py (npr. pri 1B, ko rabiš spremenit SEQ_LEN in kasneje ko spreminjaš ROB size)
+
+poženeš z sbatch exec_apptainer.sh
+
+*Lahko uporabiš tudi --reservation=fri, če je gužva (meni ni bilo treba)
+
+Po želji uredi .gitignore, jaz sem dau use loge in binarne fajle ven, da ne bo spet kakih merge konfliktov...
