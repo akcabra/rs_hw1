@@ -2,6 +2,9 @@ in sim_log dirrectory
 COMMAND TO GET DESIRED STATDS (TASK 1a)
 grep -ri "simSeconds" ./stats.txt && grep -ri "numCycles" ./stats.txt && grep -ri "cpi" ./stats.txt && grep -ri "ipc" ./stats.txt
 
+
+grep -ri "ipc" ./stats.txt && grep -ri "fullRegistersEvents" ./stats.txt
+
 če rabiš katero dodatno statistiko samo dodaš:
 && grep -ri "ENERGETSKA UČINKOVITOST" ./stats.txt 
 

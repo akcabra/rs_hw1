@@ -56,16 +56,18 @@ For both version, original and optimized, sweep the number of physical integer a
 
 *Note: if you cannot find the `fullRegistersEvents` stat, than means that is equal to 0 , and you can report 0 for all of them.*
 
-| Metric | 64 | 96 | 128 |
+| Metric-original | 64 | 96 | 128 |
 |---|---|---|---|
-| IPC | |  |  | 
-| Stalls |  | |  | 
+| IPC |  1.120506 | 1.244335 | 1.230802 | 
+| Stalls | 17338 | 9583 | 145 | 
 
 
-| Metric | 64 | 96 | 128 | 
+| Metric-optimized | 64 | 96 | 128 | 
 |---|---|---|---|
-| IPC |  |  |  |  
-| Stalls |  |  | |  
+| IPC |  1.377836 | 1.616652 |  1.549267 |  
+| Stalls | 2750 | 27 | 131 |  
+
+IPC improves significantly from 64 to 96 registers for both versions due to reduced register stalls, but decreases at 128 despite stalls being nearly eliminated. This shows that additional registers stop improving performance beyond 96 entries. The remaining bottleneck is not register pressure but instruction dependencies (original) and diminishing returns in hardware utilization (optimized). Thus, 96 registers provide the best balance between reducing stalls and avoiding unnecessary architectural overhead.
 
 ## Task 2: Branch Prediction and Speculative Execution in Masked Attention (O3CPU) (5 points)
 

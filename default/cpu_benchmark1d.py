@@ -12,17 +12,17 @@ from cpuInORD_model import RiscV_InOrder_CPU
 import datetime
 import sys
 
-# Task 1c: Pipeline Width Sweep
+# Task 1d: Register File Sweep
 
-pipeline_width = int(sys.argv[1]) if len(sys.argv) > 1 else 2
+num_registers = int(sys.argv[1]) if len(sys.argv) > 1 else 64
 version = sys.argv[2] if len(sys.argv) > 2 else "original"
 
-print(f"[{datetime.datetime.now()}] Task 1c: Pipeline Width = {pipeline_width}, Version = {version}")
+print(f"[{datetime.datetime.now()}] Task 1d: Num Registers = {num_registers}, Version = {version}")
 
 cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
 memory = SingleChannelDDR3_1600("7GiB")
 
-processor = RISCV_O3_CPU(pipeline_width=pipeline_width, rob_size=128)
+processor = RISCV_O3_CPU(pipeline_width=2, rob_size=128, num_int_regs=num_registers, num_float_regs=num_registers)
 
 board = SimpleBoard(
     clk_freq="3GHz",
@@ -40,7 +40,5 @@ binary = CustomResource(binary_path)
 board.set_se_binary_workload(binary)
 
 simulator = Simulator(board=board)
-print(f"[{datetime.datetime.now()}] Simulation started: width={pipeline_width}, version={version}")
+print(f"[{datetime.datetime.now()}] Simulation started: registers={num_registers}, version={version}")
 simulator.run()
-
-print(f"[{datetime.datetime.now()}] Simulation completed: width={pipeline_width}, version={version}")

@@ -65,10 +65,12 @@ def create_cpu():
 
 
 class O3CPUCore(RiscvO3CPU):
-    def __init__(self, pipeline_width=2, rob_size=128):
+    def __init__(self, pipeline_width=2, rob_size=128, num_int_regs=80, num_float_regs=64):
         """
         :param pipeline_width: sets the width of fetch, decode, rename, issue, commit stages
         :param rob_size: number of entries in the reorder buffer
+        :param num_int_regs: number of physical integer registers
+        :param num_float_regs: number of physical floating-point registers
         """
         super().__init__()
 
@@ -148,8 +150,8 @@ class O3CPUCore(RiscvO3CPU):
         # self.numROBEntries = 128
         self.numROBEntries = rob_size
 
-        self.numPhysIntRegs = 80
-        self.numPhysFloatRegs = 64
+        self.numPhysIntRegs = num_int_regs
+        self.numPhysFloatRegs = num_float_regs
         self.renameWidth = pipeline_width
         self.numRobs = 2000
         self.numPhysVecPredRegs = 32
@@ -262,13 +264,15 @@ class O3CPUCore(RiscvO3CPU):
 
 
 class O3CPUStdCore(BaseCPUCore):
-    def __init__(self, pipeline_width=2, rob_size=128):
+    def __init__(self, pipeline_width=2, rob_size=128, num_int_regs=80, num_float_regs=64):
         """
         :param pipeline_width: sets the width of fetch, decode, rename, issue, wb, and
         commit stages.
         :param rob_size: determine the number of entries in the reorder buffer.
+        :param num_int_regs: number of physical integer registers
+        :param num_float_regs: number of physical floating-point registers
         """
-        core = O3CPUCore(pipeline_width=pipeline_width, rob_size=rob_size)
+        core = O3CPUCore(pipeline_width=pipeline_width, rob_size=rob_size, num_int_regs=num_int_regs, num_float_regs=num_float_regs)
         super().__init__(core, ISA.RISCV)
 
 
@@ -280,13 +284,15 @@ class O3CPUStdCore(BaseCPUCore):
 
 
 class O3CPU(BaseCPUProcessor):
-    def __init__(self, pipeline_width=2, rob_size=128):
+    def __init__(self, pipeline_width=2, rob_size=128, num_int_regs=80, num_float_regs=64):
         """
         :param pipeline_width: sets the width of fetch, decode, rename, issue, wb, and
         commit stages.
         :param rob_size: determine the number of entries in the reorder buffer.
+        :param num_int_regs: number of physical integer registers
+        :param num_float_regs: number of physical floating-point registers
         """
-        cores = [O3CPUStdCore(pipeline_width=pipeline_width, rob_size=rob_size)]
+        cores = [O3CPUStdCore(pipeline_width=pipeline_width, rob_size=rob_size, num_int_regs=num_int_regs, num_float_regs=num_float_regs)]
         super().__init__(cores)
        
 
@@ -306,7 +312,7 @@ class O3CPU(BaseCPUProcessor):
         return score
 
 class RISCV_O3_CPU(O3CPU):
-    def __init__(self, pipeline_width=2, rob_size=128):
-        super().__init__(pipeline_width=pipeline_width, rob_size=rob_size)
+    def __init__(self, pipeline_width=2, rob_size=128, num_int_regs=80, num_float_regs=64):
+        super().__init__(pipeline_width=pipeline_width, rob_size=rob_size, num_int_regs=num_int_regs, num_float_regs=num_float_regs)
 
 
