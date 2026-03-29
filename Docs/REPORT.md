@@ -18,7 +18,7 @@ First, report the following metrics from `stats.txt` for both CPU models:
 
 What is the IPC speedup of O3CPU over MinorCPU? Explain it.
 
-The IPC speedup of O3CPU over MinorCPU is calculated:
+The Instructions Per Cycle (IPC) speedup of O3CPU over MinorCPU is calculated:
 
 $$\text{IPC Speedup} = \frac{\text{IPC}_{\text{O3CPU}}}{\text{IPC}_{\text{MinorCPU}}} = \frac{1.128770}{0.663522} \approx 1.70$$
 
@@ -34,14 +34,22 @@ For parameter `SEQ_LEN=64` of workload, run O3CPU with ROB sizes of 16, 32, 64, 
 
 ![IPC vs ROB size](figs/ipc_vs_rob.png)
 
-PREGLEJ ŠE ENKRAT IN UTEMELJI
-Performance saturates at about ROB = 128 entries.
-Evidence: IPC is 1.128770 at ROB 128 and stays 1.128770 at ROB 256, so there is no further gain.
-Interpretation: the available ILP in this workload is mostly exhausted by around 128 in-flight instructions; increasing ROB beyond that does not uncover more useful parallelism.
+Performance saturates at ROB size = 128 entries. 
+
+For `SEQ_LEN = 64`, the O3CPU was evaluated with ROB sizes from 16 to 256 entries, showing IPC increasing from 0.831878 (ROB 16) to 1.128770 (ROB 128), after which it remains unchanged at ROB 256. This indicates that performance saturates at a ROB size of 128 entries. The plateau suggests limited instruction-level parallelism (ILP) in the workload. The main cause is the dependency chain in the `dot_product()` loop, where each iteration depends on the previous accumulation. With `D_K = 64` and a floating-point multiply latency of 6 cycles, this creates a long critical path of about 384 cycles. As a result, the processor quickly runs out of independent instructions to execute in parallel. Increasing the ROB beyond 128 entries therefore provides no benefit, as the limitation is due to inherent data dependencies rather than hardware capacity.
+
 
 ### Task 1c:  
 Rerun both the original and optimized version (`scaled_dot_product_adv`) of the attention kernel on O3CPU, sweeping pipeline width  over  2, 4, and 8 width of different stages to the same value. Record IPC for each combination and plot both versions on the same graph as IPC vs. pipeline width. Analyze whether the IPC gap between the two versions grows or shrinks as the pipeline widens, and explain what this reveals about the relationship between  ILP and hardware utilization.
 
+| Pipeline Width   | 2 | 4 | 8 | 
+|---|---|---|---|
+|  1.128770 |  1.153991 | 1.146907 |
+|  1.388050 |  1.525176 | 1.643418 |
+
+![IPC vs Pipeline Width](figs/ipc_vs_pipeline_width.png)
+
+The optimized version breaks dependency chains by using independent accumulators (96-cycle critical path vs. 384 cycles for the original). As pipeline width increases, wider pipelines expose more independent parallelism—but only the optimized version can exploit it because the original version is bottlenecked by its long dependency chain. The original version's IPC even decreases slightly (1.153 → 1.147), suggesting pipeline width isn't helping when instructions are serialized. This shows that better ILP (via loop unrolling) is essential for wider pipelines to be effective—without it, more execution bandwidth goes unused.
 
 ### Task 1d:
 For both version, original and optimized, sweep the number of physical integer and floating-point registers over 64, 96, and 128 entries measuring IPC and the number of stalls caused by register file exhaustion (`system.cpu.rename.fullRegistersEvents`). Plot IPC and stalls vs. number of registers. At what point do additional registers stop improving IPC? Set the pipeline width to 2 and ROB size to 128 for this experiment. 

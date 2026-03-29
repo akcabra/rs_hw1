@@ -65,14 +65,10 @@ def create_cpu():
 
 
 class O3CPUCore(RiscvO3CPU):
-    def __init__(self):
+    def __init__(self, pipeline_width=2, rob_size=128):
         """
-        :param width: sets the width of fetch, decode, rename, issue, wb, and
-        commit stages.
-        :param rob_size: determine the number of entries in the reorder buffer.
-        :param num_int_regs: determines the size of the integer register file.
-        :param num_int_regs: determines the size of the vector/floating point
-        register file.
+        :param pipeline_width: sets the width of fetch, decode, rename, issue, commit stages
+        :param rob_size: number of entries in the reorder buffer
         """
         super().__init__()
 
@@ -128,7 +124,7 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - FETCH STAGE
         # ****************************
-        self.fetchWidth = 2 # number of instructions fetched per cycle
+        self.fetchWidth = pipeline_width # number of instructions fetched per cycle
         self.fetchBufferSize = 16
         self.fetchQueueSize = 32 
         self.smtNumFetchingThreads = 1
@@ -136,7 +132,7 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - DECODE STAGE
         # ****************************
-        self.decodeWidth = 2
+        self.decodeWidth = pipeline_width
         # possible values "Dynamic", "Partitioned", "Threshold"
         self.smtROBPolicy = "Partitioned"
         self.smtROBThreshold = 100 
@@ -150,11 +146,11 @@ class O3CPUCore(RiscvO3CPU):
         # self.numROBEntries = 32
         # self.numROBEntries = 64
         # self.numROBEntries = 128
-        self.numROBEntries = 256
+        self.numROBEntries = rob_size
 
         self.numPhysIntRegs = 80
         self.numPhysFloatRegs = 64
-        self.renameWidth = 2
+        self.renameWidth = pipeline_width
         self.numRobs = 2000
         self.numPhysVecPredRegs = 32
         # most ISAs don't use condition-code regs, so default is 0
@@ -163,8 +159,8 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - DISPATCH/ISSUE STAGE
         # ****************************
-        self.dispatchWidth = 2
-        self.issueWidth = 2
+        self.dispatchWidth = pipeline_width
+        self.issueWidth = pipeline_width
         
         # ****************************
         # - EXECUTE STAGE
@@ -232,7 +228,7 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - WRITE/Memory STAGE
         # ****************************
-        self.wbWidth = 2
+        self.wbWidth = pipeline_width
         self.LQEntries = 32
         self.SQEntries = 32
         # Number of places to shift addr before check
@@ -251,8 +247,8 @@ class O3CPUCore(RiscvO3CPU):
         # ****************************
         # - COMMIT STAGE
         # ****************************
-        self.commitWidth = 2
-        self.squashWidth = 2
+        self.commitWidth = pipeline_width
+        self.squashWidth = pipeline_width
         # Time buffer size for backwards 
         self.backComSize = 10
         # Time buffer size for forward communication
@@ -266,16 +262,13 @@ class O3CPUCore(RiscvO3CPU):
 
 
 class O3CPUStdCore(BaseCPUCore):
-    def __init__(self):
+    def __init__(self, pipeline_width=2, rob_size=128):
         """
-        :param width: sets the width of fetch, decode, raname, issue, wb, and
+        :param pipeline_width: sets the width of fetch, decode, rename, issue, wb, and
         commit stages.
         :param rob_size: determine the number of entries in the reorder buffer.
-        :param num_int_regs: determines the size of the integer register file.
-        :param num_int_regs: determines the size of the vector/floating point
-        register file.
         """
-        core = O3CPUCore()
+        core = O3CPUCore(pipeline_width=pipeline_width, rob_size=rob_size)
         super().__init__(core, ISA.RISCV)
 
 
@@ -287,16 +280,13 @@ class O3CPUStdCore(BaseCPUCore):
 
 
 class O3CPU(BaseCPUProcessor):
-    def __init__(self):
+    def __init__(self, pipeline_width=2, rob_size=128):
         """
-        :param width: sets the width of fetch, decode, raname, issue, wb, and
+        :param pipeline_width: sets the width of fetch, decode, rename, issue, wb, and
         commit stages.
         :param rob_size: determine the number of entries in the reorder buffer.
-        :param num_int_regs: determines the size of the integer register file.
-        :param num_int_regs: determines the size of the vector/floating point
-        register file.
         """
-        cores = [O3CPUStdCore()]
+        cores = [O3CPUStdCore(pipeline_width=pipeline_width, rob_size=rob_size)]
         super().__init__(cores)
        
 
@@ -316,7 +306,7 @@ class O3CPU(BaseCPUProcessor):
         return score
 
 class RISCV_O3_CPU(O3CPU):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, pipeline_width=2, rob_size=128):
+        super().__init__(pipeline_width=pipeline_width, rob_size=rob_size)
 
 
