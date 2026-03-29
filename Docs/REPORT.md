@@ -101,11 +101,11 @@ Compile and run the masked attention workload using the baseline configuration. 
 
 | Metric | Value |
 |---|---|
-| Total instructions committed | |
-| Total cycles | |
-| IPC |  |
-| Branch instructions committed |  |
-| Branch mispredictions | |
+| Total instructions committed | 2194513 |
+| Total cycles | 1774074 |
+| IPC | 1.236991 |
+| Branch instructions committed | 335874 |
+| Branch mispredictions | 501 |
 
 
 
@@ -114,15 +114,17 @@ Run the workload with the following four branch predictors (`TournamentBP`,`Loca
 
 | Predictor | Branch mispredictions  | IPC | 
 |---|---|---|
-| TAGE | | | |
-| LocalBP |  | | |
-| Tournament | | | |
-| BimodeBP | | | |
+| TAGE | 501 | 1.236991 | |
+| LocalBP | 5430 | 1.203245 | |
+| Tournament | 4673 | 1.214289 | |
+| BimodeBP | 4788 | 1.212354 | |
 
 *Note: Metric for branch mispredictions count is: `branchPred.condIncorrect` while the metric for Branch instructions committed is: `branchPred.committed_0::total`*
 
 
 Which predictor achieves the lowest misprediction count and why?
+
+The LTAGE branch predictor achieved the lowest misprediction count.
 
 ### Task 2c
 Using the best-performing predictor from *Q2*, sweep ROB size over **32, 64, and 128 entries**:
@@ -131,9 +133,9 @@ Record for each ROB size:
 
 | ROB Size | Misprediction count | IPC | Squashed instruction count |
 |---|---|---|---|
-| 32 |  | |  |
-| 64 |  |  |  |
-| 128 | |  | |
+| 32 | 502 | 1.088545 | 520 |
+| 64 | 499 | 1.238401 | 473 |
+| 128 | 501 | 1.236991 | 441 |
 
 *Note: Metric for Squashed instruction count is: "core.numSquashedInsts"*
 
