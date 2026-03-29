@@ -114,7 +114,7 @@ Run the workload with the following four branch predictors (`TournamentBP`,`Loca
 
 | Predictor | Branch mispredictions  | IPC | 
 |---|---|---|
-| TAGE | 501 | 1.236991 | |
+| TAGE | 499 | 1.237033 | |
 | LocalBP | 5430 | 1.203245 | |
 | Tournament | 4673 | 1.214289 | |
 | BimodeBP | 4788 | 1.212354 | |
@@ -124,7 +124,7 @@ Run the workload with the following four branch predictors (`TournamentBP`,`Loca
 
 Which predictor achieves the lowest misprediction count and why?
 
-The LTAGE branch predictor achieved the lowest misprediction count.
+The LTAGE branch predictor achieved the lowest misprediction count at 499. This is because TAGE uses multiple predictor tables with different history lengths, which allow it to capture both short and long-term branch correlations. This makes it very efficient for workloads with complex branch patterns. The other branch predictors rely on shorter branch history patterns, which make them less reliable and prone to mispredicting branches.
 
 ### Task 2c
 Using the best-performing predictor from *Q2*, sweep ROB size over **32, 64, and 128 entries**:
@@ -133,10 +133,12 @@ Record for each ROB size:
 
 | ROB Size | Misprediction count | IPC | Squashed instruction count |
 |---|---|---|---|
-| 32 | 502 | 1.088545 | 520 |
-| 64 | 499 | 1.238401 | 473 |
-| 128 | 501 | 1.236991 | 441 |
+| 32 | 499 | 1.088510 | 520 |
+| 64 | 499 | 1.238335 | 478 |
+| 128 | 499 | 1.237033 | 442 |
 
 *Note: Metric for Squashed instruction count is: "core.numSquashedInsts"*
 
-As ROB size increases, what happens simultaneously to IPC and to instructions flushed per misprediction? .
+As ROB size increases, what happens simultaneously to IPC and to instructions flushed per misprediction?
+
+As the ROB size increases, the IPC also increases, indicating better processor throughput. Meanwhile, the number of flushed instructions per misprediction decreases. A larger ROB allows the processor to keep more instructions in progress, including independent instructions that are not dependent on unresolved branches. This means the processor can commit more correct-path instructions before a misprediction is detected, so when a misprediction does occur, there are fewer speculative instructions left to be discarded. Thus, a larger ROB both improves performance and reduces the penalty for mispredictions.
